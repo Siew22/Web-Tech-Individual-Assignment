@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWAM TECH - Cyber Name Card</title>
+    <style>
+        /* ===========================================================
+           Cyberpunk color scheme & global variables (linked with Q1)
+           =========================================================== */
+        :root {
+            --bg-dark: #050505;
+            --card-dark: #0b0c10;
+            --brand-cyan: #00d2ff;
+            --brand-red: #ff4757;
+            --text-main: #c5c6c7;
+            --text-glow: 0 0 10px rgba(0, 210, 255, 0.8), 0 0 20px rgba(0, 210, 255, 0.4);
+            --border-glow: 0 0 15px rgba(0, 210, 255, 0.5), inset 0 0 20px rgba(0, 210, 255, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            /* Add sci-fi background grid */
+            background-image: linear-gradient(rgba(0, 210, 255, 0.05) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0, 210, 255, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-main);
+            overflow: hidden;
+        }
+
+        /* =========================================================
+           Core: 3D flip container
+           ========================================================= */
+        .card-container {
+            width: 500px; /* Slightly widen to accommodate information */
+            height: 300px; /* Slightly increase */
+            perspective: 1500px;
+            cursor: pointer;
+        }
+
+        .card-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+        }
+
+        .card-container:hover .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 12px;
+            background: var(--card-dark);
+            border: 1px solid rgba(0, 210, 255, 0.3);
+            box-shadow: var(--border-glow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Cyberpunk Holographic Scan Line Overlay */
+        .card-front::after, .card-back::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-linear-gradient(
+                transparent 0px, 
+                rgba(0, 210, 255, 0.05) 2px, 
+                transparent 4px
+            );
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* =========================================================
+           Front of business card (employee information)
+           ========================================================= */
+        .card-front {
+            background: linear-gradient(rgba(11, 12, 16, 0.85), rgba(11, 12, 16, 0.95)), 
+                        url('https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80') center/cover;
+            justify-content: space-between; /* Adjust the layout to distribute the content. */
+            padding: 25px;
+        }
+        
+        .front-header {
+            text-align: center;
+        }
+
+        .cyber-badge {
+            font-size: 0.75rem;
+            color: var(--brand-red);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            border: 1px solid var(--brand-red);
+            padding: 4px 10px;
+            border-radius: 3px;
+            background: rgba(255, 71, 87, 0.1);
+            display: inline-block;
+        }
+
+        .card-front h1 {
+            font-size: 2.8rem;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin: 0;
+            text-shadow: var(--text-glow);
+        }
+
+        .card-front .subtitle {
+            color: var(--brand-cyan);
+            font-size: 1rem;
+            letter-spacing: 2px;
+            margin-top: 5px;
+        }
+
+        /* Employee information area */
+        .employee-info {
+            border-top: 1px solid rgba(0, 210, 255, 0.2);
+            padding-top: 15px;
+            text-align: left;
+        }
+
+        .employee-name {
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .employee-title {
+            color: var(--text-main);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+        
+        .employee-contact p {
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 5px;
+        }
+        
+        .employee-contact p span {
+            color: var(--brand-cyan); /* Icon colors */
+        }
+        
+        /* =========================================================
+           Back of the business card (Company/cafe information)
+           ========================================================= */
+        .card-back {
+            transform: rotateY(180deg);
+            padding: 30px;
+            justify-content: center;
+            background: radial-gradient(circle at center, #1f2833 0%, #0b0c10 100%);
+        }
+
+        .back-header {
+            border-bottom: 1px solid rgba(0, 210, 255, 0.3);
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .back-header h2 {
+            color: #fff;
+            font-size: 1.6rem;
+            letter-spacing: 2px;
+            text-shadow: 0 0 8px rgba(0, 210, 255, 0.6);
+        }
+
+        .info-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .info-list li {
+            font-size: 0.95rem;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .info-label {
+            color: var(--brand-cyan);
+            font-weight: bold;
+            width: 130px;
+            flex-shrink: 0;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .info-content {
+            color: #fff;
+            line-height: 1.4;
+        }
+
+        .highlight-link {
+            color: var(--brand-red);
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .highlight-link:hover {
+            text-shadow: 0 0 8px var(--brand-red);
+        }
+
+        /* Responsive adaptation */
+        @media (max-width: 520px) {
+            .card-container {
+                width: 95%;
+                height: 320px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card-container">
+        <div class="card-inner">
+            
+            <!-- Front of business card (employee's personal information) -->
+            <div class="card-front">
+                <div class="front-header">
+                    <div class="cyber-badge">Subsidiary of AWAM TECH</div>
+                    <h1>AWAM TECH</h1>
+                    <p class="subtitle">CYBER CAFE & E-SPORTS</p>
+                </div>
+                
+                <!-- Replace the employee information area in [SYSTEM ALIVE] -->
+                <div class="employee-info">
+                    <p class="employee-name">CHIU SIEW SENG</p>
+                    <p class="employee-title">Cyber Operations Manager</p>
+                    <div class="employee-contact">
+                        <p><span>📞</span> +60 12-345 6789</p>
+                        <p><span>✉️</span> ahseng.mgr@awamtech.com</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Back of the business card (Company/cafe information) -->
+            <div class="card-back">
+                <div class="back-header">
+                    <h2>AWAM TECH</h2>
+                </div>
+                <ul class="info-list">
+                    <li>
+                        <span class="info-label">📍 Address:</span>
+                        <span class="info-content">123, Jalan Awam Jawa,<br>96000 Sibu, Sarawak</span>
+                    </li>
+                    <li>
+                        <span class="info-label">🌐 Website:</span>
+                        <span class="info-content">
+                            <a href="http://www.awamtech.com" class="highlight-link" target="_blank">www.awamtach.com</a>
+                        </span>
+                    </li>
+                    <li>
+                        <span class="info-label">⏱️ Working Hours:</span>
+                        <span class="info-content">Mon-Fri: 9 AM - 10 PM<br>Sat-Sun: 10 AM - 11 PM</span>
+                    </li>
+                    <li>
+                        <span class="info-label">🏢 Company Add:</span>
+                        <span class="info-content">456, Business Avenue, Awam City,<br>93000 Kuching, Sarawak</span>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
