@@ -139,7 +139,7 @@ Or simply double-click either `.html` file to run locally.
 
 | Page | Preview |
 |---|---|
-| Home — Hero + Flash Sale | *(See report Figure 2.2)* |
+| Home — Hero + Flash Sale |  |
 | Products — Catalog + Filter | *(See report Figure 2.2)* |
 | Shopping Cart Drawer | *(See report Figure 2.3)* |
 | Name Card — Front | *(See report Figure 3.1)* |
